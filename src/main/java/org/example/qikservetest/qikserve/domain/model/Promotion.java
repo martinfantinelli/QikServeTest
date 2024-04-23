@@ -2,7 +2,8 @@ package org.example.qikservetest.qikserve.domain.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 @Entity
 public class Promotion {
     public enum PromotionType {
@@ -10,38 +11,42 @@ public class Promotion {
     }
 
     @Id
-    private String productId;
-    private PromotionType promotionType;
+    private String id;
+    private PromotionType type;
     private int discount;
-    private int requiredQty;
-    private int freeQty;
+    private int required_qty;
+    private int free_qty;
+    @ManyToOne
+    @JoinColumn(name = "product_Id")
+    private Product product;
 
-    public Promotion(String productId, PromotionType promotionType, int discount, int requiredQty, int freeQty) {
-        this.productId = productId;
-        this.promotionType = promotionType;
+    public Promotion(String id, PromotionType promotionType, int discount, int requiredQty, int freeQty, Product product) {
+        this.id = id;
+        this.type = promotionType;
         this.discount = discount;
-        this.requiredQty = requiredQty;
-        this.freeQty = freeQty;
+        this.required_qty = requiredQty;
+        this.free_qty = freeQty;
+        this.product = product;
     }
 
     public Promotion(){
 
     }
 
-    public String getProductId() {
-        return productId;
+    public String getId() {
+        return id;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public PromotionType getPromotionType() {
-        return promotionType;
+    public PromotionType getType() {
+        return type;
     }
 
-    public void setPromotionType(PromotionType promotionType) {
-        this.promotionType = promotionType;
+    public void setType(PromotionType type) {
+        this.type = type;
     }
 
     public int getDiscount() {
@@ -52,19 +57,27 @@ public class Promotion {
         this.discount = discount;
     }
 
-    public int getRequiredQty() {
-        return requiredQty;
+    public int getRequired_qty() {
+        return required_qty;
     }
 
-    public void setRequiredQty(int requiredQty) {
-        this.requiredQty = requiredQty;
+    public void setRequired_qty(int required_qty) {
+        this.required_qty = required_qty;
     }
 
-    public int getFreeQty() {
-        return freeQty;
+    public int getFree_qty() {
+        return free_qty;
     }
 
-    public void setFreeQty(int freeQty) {
-        this.freeQty = freeQty;
+    public void setFree_qty(int free_qty) {
+        this.free_qty = free_qty;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

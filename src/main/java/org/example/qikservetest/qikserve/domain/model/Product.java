@@ -1,7 +1,11 @@
 package org.example.qikservetest.qikserve.domain.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity
 public class Product {
@@ -9,15 +13,17 @@ public class Product {
     private String id;
     private String name;
     private int price;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Promotion> promotions;
 
-    public Product(String id, String name, int price) {
+    public Product(String id, String name, int price, List<Promotion> promotions) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.promotions = promotions;
     }
 
     public Product() {
-
     }
 
     public String getId() {
@@ -42,5 +48,13 @@ public class Product {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public List<Promotion> getPromotions() {
+        return promotions;
+    }
+
+    public void setPromotions(List<Promotion> promotions) {
+        this.promotions = promotions;
     }
 }
