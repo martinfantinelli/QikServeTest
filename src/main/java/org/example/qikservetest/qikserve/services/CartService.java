@@ -1,5 +1,7 @@
 package org.example.qikservetest.qikserve.services;
 
+import org.example.qikservetest.qikserve.domain.model.CartDetails;
+import org.example.qikservetest.qikserve.domain.model.CartItem;
 import org.example.qikservetest.qikserve.domain.model.Product;
 import org.example.qikservetest.qikserve.domain.ProductWithPromotion;
 import org.example.qikservetest.qikserve.domain.model.Promotion;
@@ -19,27 +21,11 @@ public class CartService {
         this.wiremockClient = wiremockClient;
     }
 
-    public int calculateTotalPrice(List<ProductWithPromotion> cartItems) {
-        int totalPrice = 0;
-
-        for (ProductWithPromotion item : cartItems) {
-            Product product = item.getProduct();
-            Promotion promotion = item.getPromotion();
-            int quantity = item.getQuantity();
-
-            int finalPrice = applyPromotion(product, promotion, quantity);
-
-            totalPrice += finalPrice;
-        }
-
-        return totalPrice;
-    }
-
     public int applyPromotion(Product product, Promotion promotion, int quantity) {
         int finalPrice = product.getPrice();
 
         if (promotion != null) {
-            switch (promotion.getPromotionType()) {
+            switch (promotion.getType()) {
                 case FLAT_PERCENT:
                     int discountPercentage = promotion.getDiscount();
                     int discountAmount = (product.getPrice() * discountPercentage / 100) * quantity;
@@ -47,8 +33,8 @@ public class CartService {
                     break;
 
                 case BUY_X_GET_Y_FREE:
-                    int x = promotion.getRequiredQty();
-                    int y = promotion.getFreeQty();
+                    int x = promotion.getRequired_qty();
+                    int y = promotion.getFree_qty();
 
                     int cycles = quantity / x;
                     int freeQuantity = cycles * y;
@@ -69,7 +55,7 @@ public class CartService {
     }
 
     public int applyQtyBasedPriceOverride(Product product, Promotion promotion, int quantity) {
-        int requiredQty = promotion.getRequiredQty();
+        int requiredQty = promotion.getRequired_qty();
         int specialPrice = promotion.getDiscount();
 
         int totalPrice = 0;
@@ -85,23 +71,20 @@ public class CartService {
         return totalPrice;
     }
 
-    public int calculateTotalSavings(List<ProductWithPromotion> cartItems) {
-        int totalSavings = 0;
+    public int calculateTotalPrice() throws IOException {
+        CartDetails cartDetails = wiremockClient.fetchCartDetails();
 
-        for (ProductWithPromotion item : cartItems) {
-            Product product = item.getProduct();
-            Promotion promotion = item.getPromotion();
-            int quantity = item.getQuantity();
-
-            if (promotion != null) {
-                int originalPrice = product.getPrice();
-                int finalPrice = applyPromotion(product, promotion, quantity);
-
-                totalSavings += originalPrice - finalPrice;
-            }
+        int totalPrice = 0;
+        for (CartItem item : cartDetails.getItems()) {
+            totalPrice += item.getTotalPrice();
         }
+        return totalPrice;
+    }
 
-        return totalSavings;
+    public int calculateTotalSavings() throws IOException {
+        CartDetails cartDetails = wiremockClient.fetchCartDetails();
+
+        return cartDetails.getTotalSavings();
     }
 
     public List<Product> fetchProducts() throws IOException {
@@ -114,5 +97,9 @@ public class CartService {
 
     public Promotion fetchPromotionByPromotionId(String promotionId) throws IOException {
         return this.wiremockClient.fetchPromotionByProductId(promotionId);
+    }
+
+    public CartDetails fetchCartDetails() throws IOException {
+        return wiremockClient.fetchCartDetails();
     }
 }

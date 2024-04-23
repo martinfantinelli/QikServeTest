@@ -1,7 +1,9 @@
 package org.example.qikservetest.qikserve.controller;
 
+import org.example.qikservetest.qikserve.domain.model.CartDetails;
 import org.example.qikservetest.qikserve.domain.model.Product;
 import org.example.qikservetest.qikserve.domain.ProductWithPromotion;
+import org.example.qikservetest.qikserve.domain.model.Promotion;
 import org.example.qikservetest.qikserve.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,16 +22,6 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/totalPrice")
-    public int calculateTotalPrice(@RequestBody List<ProductWithPromotion> cartItems) throws IOException {
-        return cartService.calculateTotalPrice(cartItems);
-    }
-
-    @PostMapping("/totalSavings")
-    public int calculateTotalSavings(@RequestBody List<ProductWithPromotion> cartItems) throws IOException {
-        return cartService.calculateTotalSavings(cartItems);
-    }
-
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable String productId) throws IOException {
         Product product = this.cartService.fetchProductById(productId);
@@ -40,5 +32,10 @@ public class CartController {
     public ResponseEntity<List<Product>> getAllProducts() throws IOException {
         List<Product> products = this.cartService.fetchProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/details")
+    public CartDetails getCartDetails() throws IOException {
+        return cartService.fetchCartDetails();
     }
 }

@@ -3,6 +3,7 @@ package org.example.qikservetest.qikserve.client;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 import com.google.gson.Gson;
+import org.example.qikservetest.qikserve.domain.model.CartDetails;
 import org.example.qikservetest.qikserve.domain.model.Product;
 import org.example.qikservetest.qikserve.domain.model.Promotion;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class WiremockClient {
     private static final String BASE_URL = "http://localhost:8080";
+    private static final String URL_MOCK = "https://251k8.wiremockapi.cloud";
     private final OkHttpClient client;
     private final Gson gson;
 
@@ -69,6 +71,26 @@ public class WiremockClient {
         }
 
         return gson.fromJson(response.body().string(), Promotion.class);
+    }
+
+    public CartDetails fetchCartDetails() throws IOException {
+        String url = URL_MOCK + "/details";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if (!response.isSuccessful()) {
+            throw new IOException("Failed in search for cart details: " + response);
+        }
+
+        String responseBody = response.body().string();
+        CartDetails cartDetails = gson.fromJson(responseBody, CartDetails.class);
+
+        return cartDetails;
     }
 }
 
