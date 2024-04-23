@@ -3,7 +3,6 @@ package org.example.qikservetest.qikserve.services;
 import org.example.qikservetest.qikserve.domain.model.CartDetails;
 import org.example.qikservetest.qikserve.domain.model.CartItem;
 import org.example.qikservetest.qikserve.domain.model.Product;
-import org.example.qikservetest.qikserve.domain.ProductWithPromotion;
 import org.example.qikservetest.qikserve.domain.model.Promotion;
 import org.example.qikservetest.qikserve.client.WiremockClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import java.util.List;
 
 @Service
 public class CartService {
-    private WiremockClient wiremockClient;
+    private final WiremockClient wiremockClient;
 
     @Autowired
     public CartService(WiremockClient wiremockClient) {
@@ -101,5 +100,9 @@ public class CartService {
 
     public CartDetails fetchCartDetails() throws IOException {
         return wiremockClient.fetchCartDetails();
+    }
+
+    public void addItem(String productId, int quantity) throws IOException {
+        wiremockClient.addItem(productId, quantity);
     }
 }

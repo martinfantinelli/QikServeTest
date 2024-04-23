@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 import com.google.gson.Gson;
 import org.example.qikservetest.qikserve.domain.model.CartDetails;
+import org.example.qikservetest.qikserve.domain.model.ItemRequest;
 import org.example.qikservetest.qikserve.domain.model.Product;
 import org.example.qikservetest.qikserve.domain.model.Promotion;
 
@@ -91,6 +92,26 @@ public class WiremockClient {
         CartDetails cartDetails = gson.fromJson(responseBody, CartDetails.class);
 
         return cartDetails;
+    }
+
+    public void addItem(String productId, int quantity) throws IOException {
+        String url = URL_MOCK + "/addItem";
+
+        String requestBodyJson = gson.toJson(new ItemRequest(productId, quantity));
+        RequestBody requestBody = RequestBody.create(requestBodyJson, MediaType.parse("application/json"));
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if (!response.isSuccessful()) {
+            throw new IOException("Failed to add item to cart: " + response);
+        }
+
+        response.close();
     }
 }
 
