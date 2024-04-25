@@ -42,7 +42,7 @@ public class CartServiceTest {
 
         List<Promotion> promotions = new ArrayList<>();
 
-        Product productForPromotion = new Product("productId1", "Product 1", 1000, promotions);
+        var productForPromotion = new Product("productId1", "Product 1", 1000, promotions);
 
         promotions.add(new Promotion("promoId1", Promotion.PromotionType.FLAT_PERCENT, 20, 2, 1, productForPromotion));
 
