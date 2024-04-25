@@ -114,5 +114,3 @@ The Wiremock service allows the project to simulate adding items to the shopping
 ## Contact
 
 If you have any questions or feedback about the project, contact me.
-
-Thank you for reading this document. Enjoy exploring the QikServe Java project!
